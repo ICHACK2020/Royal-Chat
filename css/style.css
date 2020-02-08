@@ -1,1 +1,26 @@
 
+#messageBox {
+  padding: 20px;
+  padding-bottom: 80px;
+}
+
+#chatBox {
+  padding: 20px;
+  position: fixed;
+  bottom: 0;
+  background-color: #CCC;
+}
+
+#chatArea {
+  resize: none;
+  height: 50px;
+}
+
+#sendButton {
+  height: 50px;
+  font-weight: bold;
+}
+
+.message {
+  font-size: 125%;
+}

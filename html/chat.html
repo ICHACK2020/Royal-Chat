@@ -11,11 +11,39 @@
 <script src="./../js/chat.js" defer></script>
 </head>
 <body>
-<div>
-  <h2>Chat</h2>
-  <p></p>
-  <p></p>
-</div>
-<div> <a href="HomePage.html">Back to home page!</a></div>
+<main>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <div id="messageBox">
+          <div class="panel panel-default">
+            <div class="panel-body message">Hello!</div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body message">Hi there!</div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body message">Hello!</div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body message">Hi there!</div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body message">Hello!</div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-body message">Hi there!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="chatBox" class="input-group">
+    <textarea id="chatArea" rows="1" id="messageBox" class="form-control" placeholder="Message"></textarea>
+    <div class="input-group-btn">
+      <input type="button" value="Send" id="sendButton" class="btn btn-success btn-lg" onclick="sendMessage()" />
+    </div>
+  </div>
+</main>
 </body>
 </html>

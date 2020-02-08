@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message apiCall {
+    string conv_id = 1;
+    string uid    = 2;
+    string msg    = 3;
+}
+
+message apiResponse {
+    string conv_id      = 1;
+    string uid          = 2;
+    float score         = 3;
+    float rolling_score = 4;
+}
+
+service Process {
+    rpc Relevance (stream apiCall) returns (stream apiResponse) {}
+    rpc Troll (stream apiCall) returns (stream apiResponse) {}
+}

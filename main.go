@@ -22,10 +22,17 @@ func dummyHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer socket.Close()
-	messageType, msg, err := socket.ReadMessage()
-	fmt.Println(messageType, msg)
+	msg := message{}
+	err = socket.ReadJSON(&msg)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(msg)
 	for i := 0; i < 10; i++ {
-		err := socket.WriteMessage(messageType, []byte("hello world"))
+		err := socket.WriteJSON(message{
+			Msg:       "hello world",
+			Troll:     0.4,
+			Relevance: 3.1})
 		if err != nil {
 			panic(err)
 		}
@@ -34,5 +41,5 @@ func dummyHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", dummyHandler)
-	http.ListenAndServe("146.169.207.172:80800", nil)
+	http.ListenAndServe("146.169.207.172:8080", nil)
 }

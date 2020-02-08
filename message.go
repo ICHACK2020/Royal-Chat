@@ -1,8 +1,12 @@
 package main
 
 type message struct {
-	ID        int
 	Msg       string
 	Troll     float32
 	Relevance float32
+}
+
+type apiCall struct {
+	ID  string
+	Msg *message
 }

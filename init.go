@@ -29,6 +29,7 @@ func upgrade(obj wr) *websocket.Conn {
 	return socket
 }
 
+//TODO
 func genID() string {
 	return "anvir"
 }

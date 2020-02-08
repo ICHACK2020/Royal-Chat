@@ -8,7 +8,7 @@
   padding: 20px;
   position: fixed;
   bottom: 0;
-  background-color: #CCC;
+  background-color: #EEE;
 }
 
 #chatArea {
@@ -19,8 +19,24 @@
 #sendButton {
   height: 50px;
   font-weight: bold;
+  border-color: #679;
+  background-color: #679;
 }
 
 .message {
   font-size: 125%;
+}
+
+.myMessage {
+  position: relative;
+  border-color: #679;
+  background-color: #679;
+  color: white;
+  width: 300px;
+}
+
+.otherMessage {
+  position: relative;
+  border-color: #ddd;
+  width: 300px;
 }

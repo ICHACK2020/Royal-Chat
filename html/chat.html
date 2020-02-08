@@ -6,6 +6,7 @@
 <title>Chat</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
 <link type="text/css" href="./../css/style.css" rel="stylesheet" />
+<link rel="shortcut icon" type="image/png" href="./../html/images/icon.png" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script src="./../js/chat.js" defer></script>
@@ -16,30 +17,30 @@
     <div class="row">
       <div class="col-xs-12">
         <div id="messageBox">
-          <div class="panel panel-default">
-            <div class="panel-body message">Hello!</div>
+          <div class="panel message myMessage">
+            <div class="panel-body">Hello!</div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-body message">Hi there!</div>
+          <div class="panel message otherMessage">
+            <div class="panel-body">Hi there!</div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-body message">Hello!</div>
+          <div class="panel message myMessage">
+            <div class="panel-body">Hello!</div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-body message">Hi there!</div>
+          <div class="panel message otherMessage">
+            <div class="panel-body">Hi there!</div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-body message">Hello!</div>
+          <div class="panel message myMessage">
+            <div class="panel-body">Hello!</div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-body message">Hi there!</div>
+          <div class="panel message otherMessage">
+            <div class="panel-body">Hi there!</div>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div id="chatBox" class="input-group">
-    <textarea id="chatArea" rows="1" id="messageBox" class="form-control" placeholder="Message"></textarea>
+    <textarea id="chatArea" rows="1" class="form-control" placeholder="Message"></textarea>
     <div class="input-group-btn">
       <input type="button" value="Send" id="sendButton" class="btn btn-success btn-lg" onclick="sendMessage()" />
     </div>

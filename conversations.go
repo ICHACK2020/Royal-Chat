@@ -10,6 +10,7 @@ type conversation struct {
 	incoming chan incomingMsg
 }
 
+/*
 //Constantly connects users
 func newConversation() {
 	for {
@@ -75,3 +76,4 @@ func (c *conversation) receiver() {
 		c.write(outgoing)
 	}
 }
+*/

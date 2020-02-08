@@ -22,11 +22,13 @@ func initTopicQueues() map[string](chan wr) {
 }
 
 func upgrade(obj wr) *websocket.Conn {
-	socket, err := upgrader.Upgrade(obj.w, obj.r, nil)
-	if err != nil {
-		panic(err)
+	for {
+		socket, err := upgrader.Upgrade(obj.w, obj.r, nil)
+		if err == nil {
+			return socket
+			//panic(err)
+		}
 	}
-	return socket
 }
 
 //TODO

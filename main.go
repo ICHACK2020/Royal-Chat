@@ -8,12 +8,13 @@ import (
 )
 
 var (
-	convos   = make(map[int]*conversation)
-	upgrader = websocket.Upgrader{ //Make this smarter
+	convos   = make(map[string]*conversation)
+	upgrader = websocket.Upgrader{ //TODO make this smarter
 		CheckOrigin: func(r *http.Request) bool {
 			return true
 		},
 	}
+	topicQueues = initTopicQueues()
 )
 
 func dummyHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +41,7 @@ func dummyHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", dummyHandler)
+	go newConversation()
+	http.HandleFunc("/talk/", dummyHandler)
 	http.ListenAndServe("146.169.207.172:8080", nil)
 }

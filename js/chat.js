@@ -28,7 +28,7 @@ function printMessage(message) {
 }
 
 function initializeSocket() {
-  var socket = new WebSocket("ws://146.169.207.172:8080");
+  var socket = new WebSocket("ws://146.169.207.172:8080/talk/");
   
   socket.onopen = function(e) {
     console.log("Success!");

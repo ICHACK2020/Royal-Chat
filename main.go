@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -17,31 +16,14 @@ var (
 	topicQueues = initTopicQueues()
 )
 
-func dummyHandler(w http.ResponseWriter, r *http.Request) {
-	socket, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		panic(err)
-	}
-	defer socket.Close()
-	msg := message{}
-	err = socket.ReadJSON(&msg)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(msg)
-	for i := 0; i < 10; i++ {
-		err := socket.WriteJSON(message{
-			Msg:       "hello world",
-			Troll:     0.4,
-			Relevance: 3.1})
-		if err != nil {
-			panic(err)
-		}
-	}
-}
-
 func main() {
 	go newConversation()
-	http.HandleFunc("/talk/", dummyHandler)
+
+	http.Handle("/static/css/", http.StripPrefix("/static/css/", http.FileServer(http.Dir("css/"))))
+	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("js/"))))
+	http.Handle("/static/imgs/", http.StripPrefix("/static/imgs/", http.FileServer(http.Dir("/html/images"))))
+
+	http.HandleFunc("/", homepageHandler)
+	http.HandleFunc("/talk/", chatHandler)
 	http.ListenAndServe("146.169.207.172:8080", nil)
 }

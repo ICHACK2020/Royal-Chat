@@ -62,7 +62,7 @@ func (c *conversation) receiver() {
 		var troll float32 = 0.1
 		rollingTroll := 0.1
 		var relevance float32 = 0.6
-		rollingRelevance := 0.2
+		//rollingRelevance := 0.2
 		if rollingTroll > 0.9 {
 
 		}

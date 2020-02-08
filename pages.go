@@ -27,5 +27,11 @@ func chatHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer ws.Close()
+	fmt.Println(ws.RemoteAddr().String())
 	t.Execute(w, nil)
 }

@@ -70,4 +70,4 @@ class Detector:
         return Score.get_single_score_metric(self._db[uid].recent_score)
 
     def get_rolling_score(self, uid):
-        return Score.get_single_score_metric(self._db[uid].main_score)
+        return Score.get_single_score_metric(self._db[uid].rolling_scores)

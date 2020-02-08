@@ -6,13 +6,12 @@ Created on Sat Feb  8 15:03:20 2020
 """
 
 from concurrent import futures
-from os import chdir, getcwd
+from os import chdir
 import grpc
-from tracker import Score, Detector
+from tracker import Detector
 
 
 chdir("../python_proto/")
-print(getcwd())
 import api_pb2
 import api_pb2_grpc
 
@@ -37,7 +36,7 @@ class Listener(api_pb2_grpc.ProcessServicer):
 def run():
     server = grpc.server(futures.ThreadPoolExecutor(4))
     api_pb2_grpc.add_ProcessServicer_to_server(Listener(), server)
-    server.add_insecure_port()  # Add your ip address here
+    server.add_insecure_port("localhost:8080")  # Add your ip address here
     server.start()
     input("Press any button to stop the server ")
     server.stop(0)

@@ -10,14 +10,11 @@ from os import chdir
 import grpc
 from tracker import Detector
 
-
-chdir("../python_proto/")
 import api_pb2
 import api_pb2_grpc
 
 
 class Listener(api_pb2_grpc.ProcessServicer):
-
 
     def __init__(self):
         self.detector = Detector()
@@ -25,8 +22,9 @@ class Listener(api_pb2_grpc.ProcessServicer):
     def Troll(self, request_iterator, context):
         for request in request_iterator:
             self.detector.request(request.msg, request.uid, request.conv_id)
-            score = self.detector.get_recent_score(request.uid)
-            rolling_score = self.detector.get_rolling_score(request.uid)
+            id = Detector.generate_id(request.conv_id, request.uid)
+            score = self.detector.get_recent_score(id)
+            rolling_score = self.detector.get_rolling_score(id)
             yield api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score=score, rolling_score=rolling_score)
 
     def Relevance(self, request_iterator, context):

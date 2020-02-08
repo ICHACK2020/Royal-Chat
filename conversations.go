@@ -17,7 +17,13 @@ func newConversation(w http.ResponseWriter, r *http.Request) *conversation {
 		panic(err)
 	}
 	defer socket.Close()
-	msgs := make([]message, 30) //30 is the default length of messages
+	msgs := make([]message, 0)
 	return &conversation{conn: socket,
 		messages: msgs}
+}
+
+//receiver constantly listens for messages, and when it receives them
+//forwards them to the python api
+func (c *conversation) receiver() {
+
 }

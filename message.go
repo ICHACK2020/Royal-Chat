@@ -5,8 +5,3 @@ type message struct {
 	Troll     float32
 	Relevance float32
 }
-
-type apiCall struct {
-	ID  string
-	Msg *message
-}

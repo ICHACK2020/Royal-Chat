@@ -14,12 +14,15 @@ type conversation struct {
 	user1    *websocket.Conn
 	user2    *websocket.Conn
 	incoming chan incomingMsg
+	topic    string
+	u1r      int
+	u2r      int
 }
 
 //Constantly connects users
 func newConversation() {
-	for _, channel := range topicQueues {
-		go func(channel chan *websocket.Conn) {
+	for k, channel := range topicQueues {
+		go func(channel chan *websocket.Conn, k string) {
 			for {
 				u1 := <-channel
 				u2 := <-channel
@@ -27,6 +30,7 @@ func newConversation() {
 					u1,
 					u2,
 					make(chan incomingMsg),
+					k, 10, 10,
 				}
 				conv.user1.WriteMessage(1, []byte("0"))
 				conv.user2.WriteMessage(1, []byte("1"))
@@ -35,7 +39,7 @@ func newConversation() {
 				go conv.receiver()
 				convos[genID()] = conv
 			}
-		}(channel)
+		}(channel, k)
 	}
 }
 
@@ -56,13 +60,15 @@ func (c *conversation) read(conn *websocket.Conn) incomingMsg {
 
 //Write to both connections
 func (c *conversation) write(msg outgoingMsg) {
+	defer c.user1.Close()
+	defer c.user2.Close()
 	err := c.user1.WriteJSON(msg)
 	if err != nil {
-		panic(err)
+		return
 	}
 	err = c.user2.WriteJSON(msg)
 	if err != nil {
-		panic(err)
+		return
 	}
 }
 
@@ -79,9 +85,10 @@ func (c *conversation) receiver() {
 			return
 		}
 		//Python stuff
-		data := &api.ApiCall{ConvId: msg.ConvID,
+		data := &api.ApiCall{ConvId: c.topic + "/" + msg.ConvID,
 			Uid: !(msg.UID == 0),
 			Msg: msg.Msg}
+
 		response, err := trollClient.Troll(context.Background(), data)
 		var troll float32
 		if err != nil {
@@ -103,6 +110,18 @@ func (c *conversation) receiver() {
 			relevance = 0
 		} else {
 			relevance = relevanceResponse.GetScore()
+		}
+
+		if msg.UID == 0 {
+			c.u1r -= (1 - int(relevance))
+			if c.u1r == 0 {
+				return
+			}
+		} else {
+			c.u2r -= (1 - int(relevance))
+			if c.u1r == 0 {
+				return
+			}
 		}
 		//Non python stuff
 

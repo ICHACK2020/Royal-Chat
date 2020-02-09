@@ -25,6 +25,7 @@
 
 .message {
   font-size: 125%;
+  border-width: 5px;
 }
 
 .myMessage {
@@ -82,4 +83,11 @@
 .logo {
   weight: 200px;
   height: 200px;
+}
+
+footer {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
 }

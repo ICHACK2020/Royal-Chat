@@ -46,6 +46,30 @@
   top: 50%;
   left: 50%;
   margin-top: -200px;
-  margin-left: -170px;
+  margin-left: -120px;
+}
 
+#loadingBox {
+  text-align: center;
+  color: #999;
+}
+
+.spinner-grow {
+    display: inline-block;
+    width: 5rem;
+    height: 5rem;
+    vertical-align: text-bottom;
+    background-color: #CCC;
+    border-radius: 50%;
+    opacity: 0;
+    animation: spinner-grow .75s linear infinite;
+}
+
+@keyframes spinner-grow {
+  0% {
+      transform: scale(0);
+  }
+  50% {
+      opacity: 1;
+  }
 }

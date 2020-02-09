@@ -41,7 +41,7 @@ socket.onmessage = function(e) {
     if (uid == obj.UID) {
       addMyMessage(obj.Msg, obj.Troll);
     } else {
-      addOtherMessage(obj.Msg);
+      addOtherMessage(obj.Msg, obj.Troll);
     }
     handleResize();
     console.log(JSON.parse(e.data));
@@ -82,10 +82,11 @@ function addMyMessage(message, troll) {
   messageBox.lastChild.style.borderColor = interpolate(troll);
 }
 
-function addOtherMessage(message) {
+function addOtherMessage(message, troll) {
   let messageBox = document.getElementById("messageBox");
   messageBox.insertAdjacentHTML("beforeend", '<div class="panel message otherMessage"><div class="panel-body"></div></div>');
   printMessage(message);
+  messageBox.lastChild.style.borderColor = interpolate(troll);
 }
 
 function printMessage(message) {

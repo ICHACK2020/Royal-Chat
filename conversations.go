@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	api "ichack2020/proto"
 
@@ -81,11 +82,14 @@ func (c *conversation) receiver() {
 		response, err := client.Troll(context.Background(), &api.ApiCall{ConvId: msg.ConvID,
 			Uid: !(msg.UID == 0),
 			Msg: msg.Msg})
+		var troll float32
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
+			troll = 0.5
+		} else {
+			troll = response.GetScore()
 		}
 		var relevance float32 = 0.1
-		troll := response.GetScore()
 		//rollingScore := response.GetRollingScore()
 		//Non python stuff
 

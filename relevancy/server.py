@@ -2,7 +2,7 @@
 """
 Created on Sat Feb  8 15:03:20 2020
 
-@authors: Akshat, George
+@authors: Akshat, Krishan
 """
 
 from concurrent import futures

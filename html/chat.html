@@ -29,7 +29,7 @@
     </div>
   </div>
   <div id="chatBox" class="input-group">
-    <textarea id="chatArea" rows="1" class="form-control" placeholder="Message"></textarea>
+    <textarea id="chatArea" rows="1" class="form-control" placeholder="Message" oninput="onMessageInput()"></textarea>
     <div class="input-group-btn">
       <input type="button" value="Send" id="sendButton" class="btn btn-success btn-lg" onclick="sendMessage()" />
     </div>

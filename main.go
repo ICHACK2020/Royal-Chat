@@ -30,7 +30,7 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 	go newConversation()
 
-	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	conn, err := grpc.Dial("146.169.157.5:8080", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}

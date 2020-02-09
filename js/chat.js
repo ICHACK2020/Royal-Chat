@@ -2,6 +2,21 @@
 
 var uid;
 var first = true;
+
+var redR = 192;
+var redG = 57;
+var redB = 43;
+
+var greenR = 0;
+var greenG = 230;
+var greenB = 64;
+
+function interpolate(troll) {
+    var red = redR * troll + greenR * (1 - troll);
+    var green = redG * troll + greenG * (1 - troll)
+    var blue = redB * troll + greenB * (1 - troll)
+    return "rgb(" + Math.floor(red) + ", " + Math.floor(green) + ", " + Math.floor(blue) + ")"
+}
 //var socket = new WebSocket("ws://146.169.207.172:8080/talk/");
 
 //let socket = new WebSocket("ws://146.169.207.172:8080/talk/")
@@ -23,7 +38,7 @@ socket.onmessage = function(e) {
   } else {
     var obj = JSON.parse(e.data);
     if (uid == obj.UID) {
-      addMyMessage(obj.Msg);
+      addMyMessage(obj.Msg, obj.Troll);
     } else {
       addOtherMessage(obj.Msg);
     }
@@ -57,9 +72,10 @@ function sendMessage() {
   chatArea.value = "";
 }
 
-function addMyMessage(message) {
+function addMyMessage(message, troll) {
   let messageBox = document.getElementById("messageBox");
   messageBox.insertAdjacentHTML("beforeend", '<div class="panel message myMessage"><div class="panel-body"></div></div>');
+  messageBox.style.color = interpolate(troll);
   printMessage(message);
 }
 
@@ -72,6 +88,7 @@ function addOtherMessage(message) {
 function printMessage(message) {
   var node = document.createTextNode(message);
   document.getElementById("messageBox").lastChild.firstChild.appendChild(node);
+  handleResize();
   window.scrollTo(0, document.body.scrollHeight);
 }
 

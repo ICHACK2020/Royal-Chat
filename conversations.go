@@ -90,7 +90,10 @@ func (c *conversation) receiver() {
 			troll = response.GetScore()
 		}
 		var relevance float32 = 0.1
-		//rollingScore := response.GetRollingScore()
+		rollingScore := response.GetRollingScore()
+		if rollingScore > 0.8 || troll > 0.85 {
+			return
+		}
 		//Non python stuff
 
 		outgoing := outgoingMsg{UID: msg.UID,

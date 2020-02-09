@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"sync"
 
 	api "ichack2020/proto"
 
@@ -45,7 +45,6 @@ func newConversation() {
 
 //Reads from either connection
 func (c *conversation) read(conn *websocket.Conn) incomingMsg {
-	fmt.Println("reading")
 	var msg incomingMsg
 	for {
 		err := conn.ReadJSON(&msg)
@@ -60,8 +59,6 @@ func (c *conversation) read(conn *websocket.Conn) incomingMsg {
 
 //Write to both connections
 func (c *conversation) write(msg outgoingMsg) {
-	defer c.user1.Close()
-	defer c.user2.Close()
 	err := c.user1.WriteJSON(msg)
 	if err != nil {
 		return
@@ -89,27 +86,40 @@ func (c *conversation) receiver() {
 			Uid: !(msg.UID == 0),
 			Msg: msg.Msg}
 
-		response, err := trollClient.Troll(context.Background(), data)
+		var wg sync.WaitGroup
 		var troll float32
-		if err != nil {
-			log.Fatal(err)
-			troll = 0.5
-		} else {
-			troll = response.GetScore()
-		}
+		var rollingScore float32
+		var relevance float32
 
-		rollingScore := response.GetRollingScore()
+		wg.Add(1)
+		go func() {
+			response, err := trollClient.Troll(context.Background(), data)
+			if err != nil {
+				log.Fatal(err)
+				troll = 0.5
+			} else {
+				troll = response.GetScore()
+			}
+			rollingScore = response.GetRollingScore()
+			wg.Done()
+		}()
+
+		wg.Add(1)
+		go func() {
+			relevanceResponse, err := relevanceClient.Relevance(context.Background(), data)
+			if err != nil {
+				log.Fatal(err)
+				relevance = 0
+			} else {
+				relevance = relevanceResponse.GetScore()
+			}
+			wg.Done()
+		}()
+
+		wg.Wait()
+
 		if rollingScore > 0.8 || troll > 0.85 {
 			return
-		}
-
-		relevanceResponse, err := relevanceClient.Relevance(context.Background(), data)
-		var relevance float32
-		if err != nil {
-			log.Fatal(err)
-			relevance = 0
-		} else {
-			relevance = relevanceResponse.GetScore()
 		}
 
 		if msg.UID == 0 {

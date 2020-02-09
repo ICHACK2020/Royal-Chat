@@ -22,14 +22,14 @@ class Listener(api_pb2_grpc.ProcessServicer):
 
     def Troll(self, request, context):
         self.detector.request(request.msg, request.uid, request.conv_id)
-        id = Detector.generate_id(request.conv_id, request.uid)
-        score = self.detector.get_recent_score(id)
-        rolling_score = self.detector.get_rolling_score(id)
+        unique_uid = Detector.generate_id(request.conv_id, request.uid)
+        score = self.detector.get_recent_score(unique_uid)
+        rolling_score = self.detector.get_rolling_score(unique_uid)
 
         print('Request recieved:')
         print('Message:\t', request.msg)
         print('Score:\t', score)
-        print('Single score metric:', self.detector.get_rolling_score_as_score(id))
+        print('Single score metric:', self.detector.get_rolling_score_as_score(unique_uid))
         print('\n\n')
 
         return api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score=score, rolling_score=rolling_score)

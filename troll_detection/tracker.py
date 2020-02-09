@@ -30,7 +30,9 @@ class Score:
             if value > 0.8 and key != 'PROFANITY':
                 return value
 
-        return sum(scores.values()) / len(scores)
+        if len(scores) != 0:
+            return sum(scores.values()) / len(scores)
+        return sum(scores.values())
 
     @property
     def recent_score(self):

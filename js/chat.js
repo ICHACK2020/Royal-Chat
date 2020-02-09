@@ -48,6 +48,7 @@ socket.onmessage = function(e) {
 }
 socket.onclose = function(e) {
   console.log("closing");
+  alert("Due to some reason, your chat cannot continue.");
   window.location.replace("http://146.169.207.172:8080");
 }
 socket.onerror = function(e) {
@@ -108,4 +109,15 @@ window.onresize = function (event) {
   handleResize();
 };
 
+function onMessageInput() {
+  let chatArea = document.getElementById("chatArea");
+  let sendButton = document.getElementById("sendButton");
+  if (chatArea.value == "") {
+    sendButton.classList.add("disabled");
+  } else {
+    sendButton.classList.remove("disabled");
+  }
+}
+
+onMessageInput();
 handleResize();

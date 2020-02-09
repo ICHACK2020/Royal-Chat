@@ -9,7 +9,7 @@ import bs4 as bs
 import urllib.request
 import re
 import nltk
-import math
+import pickle
 
 from nltk.corpus import stopwords
 from gensim.models import Word2Vec
@@ -21,13 +21,20 @@ print(listdir(getcwd()), getcwd())
 class TopicFinder:
     def __init__(self):
         self.dataText = ""
-        self.convDict = {0 : "brexit.model",
-                         1 : "uselection.model",
-                         2 : "coronavirus.model"}
+        self.topicsDict = {"brexit":  "brexit.pickle",
+                           "uselection" : "uselection.pickle",
+                           "coronavirus" : "coronavirus.pickle"}
+        self.convDict = {"brexit" : "brexit.model",
+                         "uselection" : "uselection.model",
+                         "coronavirus" : "coronavirus.model"}
         # self.word2vec = Word2Vec.load("brexit.model")
         self.stopWords = stopwords.words('english')
 
-    def loadArticle(self, url):
+    def loadFile(self, filename):
+        file = open(filename, "rb")
+        return pickle.load(file)
+
+    def loadArticle(self, url, convID):
         scrapped_data = urllib.request.urlopen(url)
         article = scrapped_data.read()
         parsed_article = bs.BeautifulSoup(article, 'lxml')
@@ -39,8 +46,13 @@ class TopicFinder:
 
         # Cleaning the text
         processed_article = article_text.lower()
-        # processed_article = re.sub('[^a-zA-Z]', ' ', processed_article)
-        # processed_article = re.sub(r'\s+', ' ', processed_article)
+        print("THIS IS IT ", len(self.loadFile(self.topicsDict.get(convID))))
+        self.dataText = self.loadFile(self.topicsDict.get(convID)) + processed_article
+        print("AFTER ", len(self.dataText))
+        # self.dataText = article_text
+        file = open(convID.split('/')[0] + '.pickle', "wb")
+        pickle.dump(self.dataText, file)
+        file.close()
 
         self.dataText = processed_article
 
@@ -55,7 +67,7 @@ class TopicFinder:
             all_words[i] = [w for w in all_words[i] if w not in self.stopWords]
 
         self.word2vec = Word2Vec(all_words, min_count=1)
-        self.word2vec.save(self.convDict.get(convID))
+        self.word2vec.save(convID.split('/')[0] + ".model")
 
     def checkInData(self, word):
         try:
@@ -65,17 +77,16 @@ class TopicFinder:
             return False
 
     def checkRelevant(self, string, convID):
-        self.word2vec = Word2Vec.load(self.convDict.get(convID))
+        self.word2vec = Word2Vec.load(convID.split('/')[0] + ".model")
         words = self.removeStopWords(string.lower())
         print("These are the words", words)
         total = 0
         for word in words:
-            # print(self.word2vec.wv.most_similar(word)[0][1])
             if self.checkInData(word):
                 print(word)
                 print(self.word2vec.wv.most_similar(word))
                 total += self.word2vec.wv.most_similar(word)[0][1]
-        if total > 0.1:
+        if total > 0.4:
             return 1
         return 0
 
@@ -87,10 +98,31 @@ class TopicFinder:
 if __name__ == "__main__":
     topicFinder = TopicFinder()
 
-    topicFinder.loadArticle('https://en.wikipedia.org/wiki/Brexit')
-    topicFinder.loadArticle("https://www.bbc.co.uk/news/world-us-canada-51070020")
-    topicFinder.loadArticle("https://www.dailymail.co.uk/news/article-7980883/Video-shows-officials-protective-suits-dragging-suspected-coronavirus-carriers-homes.html")
-    topicFinder.train(2)
-    print(topicFinder.checkRelevant("What did voters in England and Wales do", 0))
-    print(topicFinder.checkRelevant("What is different about next years election", 1))
-    print(topicFinder.checkRelevant("There are circuit boards sold in Wuhan China", 2))
+    # topicFinder.loadArticle('https://www.theguardian.com/commentisfree/2016/feb/22/my-instinct-brexit-boris-anti-eu-not-anti-europe', 'brexit')
+    # topicFinder.loadArticle('https://www.nytimes.com/interactive/2019/world/europe/what-is-brexit.html', 'brexit')
+    # topicFinder.loadArticle('https://www.thenation.com/article/archive/brexit-eu-england-trade/', 'brexit')
+    # topicFinder.loadArticle('https://en.wikipedia.org/wiki/Brexit', 'brexit')
+    # topicFinder.loadArticle('https://www.theweek.co.uk/brexit-0', 'brexit')
+    # topicFinder.loadArticle('https://www.telegraph.co.uk/brexit/', 'brexit')
+    # topicFinder.loadArticle('https://www.thetimes.co.uk/topic/brexit?page=1', 'brexit')
+
+    # topicFinder.train('brexit')
+
+    # topicFinder.loadArticle("https://www.theguardian.com/us-news/us-elections-2020", 'uselection')
+    # topicFinder.loadArticle("https://www.reuters.com/politics/us-election2020", 'uselection')
+    # topicFinder.loadArticle("https://www.aljazeera.com/news/2020/02/election-2020-presidential-primaries-caucuses-200202201344487.html", 'uselection')
+    # topicFinder.loadArticle("https://www.telegraph.co.uk/news/2020/02/05/us-election-2020-democratic-primary-race-winning-battle-delegates/", 'uselection')
+    # topicFinder.loadArticle("https://www.telegraph.co.uk/news/0/us-election-candidates-who-democrats-running-2020-presidency-bernie-sanders/", 'uselection')
+    # topicFinder.loadArticle("https://www.abc.net.au/news/2020-01-14/when-to-pay-attention-to-us-politics-in-2020/11847092", 'uselection')
+    # topicFinder.loadArticle("https://edition.cnn.com/election/2020/primaries-and-caucuses", 'uselection')
+    # topicFinder.train('uselection')
+
+    # topicFinder.loadArticle("https://www.aljazeera.com/news/2020/01/coronavirus-symptoms-vaccines-risks-200122194509687.html", 'coronavirus')
+    # topicFinder.loadArticle("https://www.businessinsider.com/medical-surveillance-allowed-china-to-discover-novel-coronavirus-2020-1?r=US&IR=T", 'coronavirus')
+    # topicFinder.loadArticle("https://www.wired.com/story/wuhan-coronavirus-snake-flu-theory/", 'coronavirus')
+    # topicFinder.loadArticle("https://www.vox.com/2020/2/7/21124157/coronavirus-hong-kong-protests-china-carrie-lam", 'coronavirus')
+    # topicFinder.loadArticle("https://www.theguardian.com/business/2020/feb/05/coronavirus-threatens-australian-economy-reeling-from-drought-and-fires", 'coronavirus')
+    # topicFinder.loadArticle("https://www.nytimes.com/2020/02/08/world/asia/coronavirus-china.html", 'coronavirus')
+    # topicFinder.loadArticle("https://www.nytimes.com/2020/02/06/world/asia/coronavirus-china.html", 'coronavirus')
+    #
+    # topicFinder.train('coronavirus')

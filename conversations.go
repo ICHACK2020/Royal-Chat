@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -10,29 +12,41 @@ type conversation struct {
 	incoming chan incomingMsg
 }
 
-/*
 //Constantly connects users
 func newConversation() {
-	for {
-		for _, channel := range topicQueues {
-			conv := &conversation{
-				upgrade(<-channel),
-				upgrade(<-channel),
-				make(chan incomingMsg),
+	for k, channel := range topicQueues {
+		fmt.Println(k)
+		go func(channel chan *websocket.Conn) {
+			for {
+				if len(channel) > 0 {
+					fmt.Println("hi")
+				} else {
+					fmt.Println(len(channel), k)
+				}
+				u1 := <-channel
+				u2 := <-channel
+				conv := &conversation{
+					u1,
+					u2,
+					make(chan incomingMsg),
+				}
+				conv.user1.WriteMessage(1, []byte("0"))
+				conv.user2.WriteMessage(1, []byte("1"))
+				go conv.read(conv.user1)
+				go conv.read(conv.user2)
+				go conv.receiver()
+				convos[genID()] = conv
 			}
-			go conv.read(conv.user1)
-			go conv.read(conv.user2)
-			go conv.receiver()
-			convos[genID()] = conv
-		}
+		}(channel)
 	}
 }
 
 //Reads from either connection
 func (c *conversation) read(conn *websocket.Conn) incomingMsg {
+	fmt.Println("reading")
 	var msg incomingMsg
 	for {
-		err := conn.ReadJSON(msg)
+		err := conn.ReadJSON(&msg)
 		if err != nil {
 			panic(err)
 		}
@@ -76,4 +90,3 @@ func (c *conversation) receiver() {
 		c.write(outgoing)
 	}
 }
-*/

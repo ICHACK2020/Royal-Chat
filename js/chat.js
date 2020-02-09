@@ -1,30 +1,45 @@
 "use strict";
 
-var id;
+var uid;
+var first = true;
 //var socket = new WebSocket("ws://146.169.207.172:8080/talk/");
 
 //let socket = new WebSocket("ws://146.169.207.172:8080/talk/")
-let socket = new WebSocket("ws://localhost:8080")
+var url = document.URL.split("/").pop()
+var convId = url.slice(0, url.length - 1)
+let socket = new WebSocket("ws://146.169.207.172:8080/ws/" + convId)
+
 socket.onopen = function(e) {
     console.log("Success!");
-    var obj = {ID: 12345678, Msg: "Test", Troll: 5.0, Relevance: 10.0};
-    socket.send(JSON.stringify(obj));
 }
 socket.onmessage = function(e) {
-    console.log(JSON.parse(e.data));
-
+    if (first) {
+        uid = parseInt(e.data)
+        console.log(e)
+        first = false
+        //Stop waiting for users
+    } else {
+        console.log(JSON.parse(e.data));
+    }
 }
 socket.onclose = function(e) {
-
+    console.log("closing")
 }
 socket.onerror = function(e) {
-
+    console.log(e);
 }
 
+class incomingMsg {
+    constructor(Msg) {
+        this.UID = uid;
+        this.ConvID = convId;
+        this.Msg = Msg;
+    }
+}
 
 function sendMessage() {
   let chatArea = document.getElementById("chatArea");
-  socket.send(id + ": " + chatArea.value);
+  socket.send(JSON.stringify(new incomingMsg(chatArea.value)));
   chatArea.value = "";
 }
 

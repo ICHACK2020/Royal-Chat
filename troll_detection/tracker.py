@@ -4,17 +4,15 @@ API_KEY = 'AIzaSyA3l1ih4OQ11VvzJzkXjdkjCkbUOQWbjDE'
 
 
 class Score:
+    _scoring_features = ['THREAT',
+                         'INSULT',
+                         'IDENTITY_ATTACK',
+                         'PROFANITY']
 
-    def __init__(self, user_id):
-        self._user_id = user_id
+    def __init__(self):
         self._recent_score = {}
-        scoring_features = ['THREAT',
-                            'INSULT',
-                            'IDENTITY_ATTACK',
-                            'PROFANITY']
-
         self._num_points = 0
-        self._scores = {key: 0 for key in scoring_features}
+        self._scores = {key: 0 for key in Score._scoring_features}
 
     def update(self, scores):
         self._recent_score = scores
@@ -26,11 +24,21 @@ class Score:
 
     @classmethod
     def get_single_score_metric(cls, scores):
-        return sum(scores.values()) / len(scores.values())
+        weightings = {
+            'THREAT': 48,
+            'INSULT': 10,
+            'IDENTITY_ATTACK': 38,
+            'PROFANITY': 4
+        }
 
-    @property
-    def user_id(self):
-        return self._user_id
+        # Very simplistic algorithm, could use some refinement
+        score = 0
+        for key, weight in weightings.items():
+            score += weight * scores[key]
+
+        score /= 100
+
+        return score
 
     @property
     def recent_score(self):
@@ -45,12 +53,17 @@ class Detector:
     def __init__(self):
         self._db = {}
 
-    def request(self, msg, uid, convid):
+    def request(self, msg, uid, conv_id):
+        u_conv_id = Detector.generate_id(conv_id, uid)
         if uid in self._db.keys():
-            self._db[uid].update(Detector.get_scores(msg))
+            self._db[u_conv_id].update(Detector.get_scores(msg))
         else:
-            self._db[uid] = Score(uid)
-            self._db[uid].update(Detector.get_scores(msg))
+            self._db[u_conv_id] = Score()
+            self._db[u_conv_id].update(Detector.get_scores(msg))
+
+    @classmethod
+    def generate_id(cls, conv_id, uid):
+        return conv_id + str(uid)
 
     @classmethod
     def get_scores(cls, msg):
@@ -66,8 +79,8 @@ class Detector:
 
         return {k: feature_dict['summaryScore']['value'] for k, feature_dict in response['attributeScores'].items()}
 
-    def get_recent_score(self, uid):
-        return Score.get_single_score_metric(self._db[uid].recent_score)
+    def get_recent_score(self, id):
+        return Score.get_single_score_metric(self._db[id].recent_score)
 
-    def get_rolling_score(self, uid):
-        return Score.get_single_score_metric(self._db[uid].rolling_scores)
+    def get_rolling_score(self, id):
+        return Score.get_single_score_metric(self._db[id].rolling_scores)

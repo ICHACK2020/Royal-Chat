@@ -46,11 +46,12 @@ socket.onmessage = function(e) {
     console.log(JSON.parse(e.data));
   }
 }
+
 socket.onclose = function(e) {
   console.log("closing");
-  alert("Due to some reason, your chat cannot continue.");
-  window.location.replace("http://146.169.207.172:8080");
+  document.getElementById("modalBtn").click();
 }
+
 socket.onerror = function(e) {
   console.log(e);
 }
@@ -117,6 +118,10 @@ function onMessageInput() {
   } else {
     sendButton.classList.remove("disabled");
   }
+}
+
+function toHomePage() {
+  window.location.replace("http://146.169.207.172:8080");
 }
 
 onMessageInput();

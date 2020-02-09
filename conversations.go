@@ -60,13 +60,15 @@ func (c *conversation) read(conn *websocket.Conn) incomingMsg {
 
 //Write to both connections
 func (c *conversation) write(msg outgoingMsg) {
+	defer c.user1.Close()
+	defer c.user2.Close()
 	err := c.user1.WriteJSON(msg)
 	if err != nil {
-		panic(err)
+		return
 	}
 	err = c.user2.WriteJSON(msg)
 	if err != nil {
-		panic(err)
+		return
 	}
 }
 

@@ -35,6 +35,5 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	//defer socket.Close()
 	topicQueues["Brexit"] <- socket
 }

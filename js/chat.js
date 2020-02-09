@@ -19,6 +19,12 @@ socket.onmessage = function(e) {
         first = false
         //Stop waiting for users
     } else {
+        var obj = JSON.parse(e.data)
+        if (uid == obj.UID) {
+            addMyMessage(obj.Msg)
+        } else {
+            addOtherMessage(obj.Msg)
+        }
         console.log(JSON.parse(e.data));
     }
 }

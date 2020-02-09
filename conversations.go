@@ -69,6 +69,8 @@ func (c *conversation) write(msg outgoingMsg) {
 //receiver constantly listens for messages, and when it receives them
 //forwards them to the python api
 func (c *conversation) receiver() {
+	defer c.user1.Close()
+	defer c.user2.Close()
 	var msg incomingMsg
 	for {
 		msg = <-c.incoming

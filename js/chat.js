@@ -13,35 +13,36 @@ socket.onopen = function(e) {
     console.log("Success!");
 }
 socket.onmessage = function(e) {
-    if (first) {
-        uid = parseInt(e.data)
-        console.log(e)
-        first = false
-        //Stop waiting for users
+  if (first) {
+    uid = parseInt(e.data);
+    console.log(e);
+    first = false;
+    //Stop waiting for users
+    document.getElementById("loadingBox").style.visibility = "hidden";
+  } else {
+    var obj = JSON.parse(e.data);
+    if (uid == obj.UID) {
+      addMyMessage(obj.Msg);
     } else {
-        var obj = JSON.parse(e.data)
-        if (uid == obj.UID) {
-            addMyMessage(obj.Msg)
-        } else {
-            addOtherMessage(obj.Msg)
-        }
-        console.log(JSON.parse(e.data));
+      addOtherMessage(obj.Msg);
     }
+    console.log(JSON.parse(e.data));
+  }
 }
 socket.onclose = function(e) {
-    console.log("closing")
-    window.location.replace("http://146.169.207.172:8080")
+  console.log("closing");
+  window.location.replace("http://146.169.207.172:8080");
 }
 socket.onerror = function(e) {
-    console.log(e);
+  console.log(e);
 }
 
 class incomingMsg {
-    constructor(Msg) {
-        this.UID = uid;
-        this.ConvID = convId;
-        this.Msg = Msg;
-    }
+  constructor(Msg) {
+    this.UID = uid;
+    this.ConvID = convId;
+    this.Msg = Msg;
+  }
 }
 
 function sendMessage() {

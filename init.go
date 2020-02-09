@@ -10,7 +10,7 @@ func initTopicQueues() map[string](chan *websocket.Conn) {
 	topics := make(map[string](chan *websocket.Conn))
 
 	topics["Brexit"] = make(chan *websocket.Conn)
-	topics["US Election"] = make(chan *websocket.Conn)
+	topics["USElection"] = make(chan *websocket.Conn)
 	topics["Coronavirus"] = make(chan *websocket.Conn)
 
 	return topics

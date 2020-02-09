@@ -39,11 +39,11 @@ func main() {
 
 	trollClient = api.NewProcessClient(conn)
 
-	conn1, err := grpc.Dial("146.169.139.247:8080", grpc.WithInsecure())
+	conn1, err := grpc.Dial("146.169.139.247:8081", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close()
+	defer conn1.Close()
 
 	relevanceClient = api.NewProcessClient(conn1)
 

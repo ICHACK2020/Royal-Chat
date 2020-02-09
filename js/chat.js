@@ -5,9 +5,10 @@ var first = true;
 //var socket = new WebSocket("ws://146.169.207.172:8080/talk/");
 
 //let socket = new WebSocket("ws://146.169.207.172:8080/talk/")
-var url = document.URL.split("/").pop()
-var convId = url.slice(0, url.length - 1)
-let socket = new WebSocket("ws://146.169.207.172:8080/ws/" + convId)
+var url = document.URL.split("/")
+var convId = url.pop().slice(0, url.length - 1)
+var topic = url.pop()
+let socket = new WebSocket("ws://146.169.207.172:8080/ws/" + topic + "/" +convId)
 
 socket.onopen = function(e) {
     console.log("Success!");

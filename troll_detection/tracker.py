@@ -1,4 +1,5 @@
 from googleapiclient import discovery
+from googleapiclient.errors import HttpError
 
 API_KEY = 'AIzaSyA3l1ih4OQ11VvzJzkXjdkjCkbUOQWbjDE'
 
@@ -65,7 +66,12 @@ class Detector:
                                     'PROFANITY': {},
                                     'IDENTITY_ATTACK': {}}
         }
-        response = service.comments().analyze(body=analyze_request).execute()
+
+        try:
+            response = service.comments().analyze(body=analyze_request).execute()
+        except HttpError:
+            # If there is an error, for now we just return 0.5. This is because the API only supports english
+            return {k: 0.5 for k in ['INSULT', 'THREAT', 'PROFANITY', 'IDENTITY_ATTACK']}
 
         return {k: feature_dict['summaryScore']['value'] for k, feature_dict in response['attributeScores'].items()}
 

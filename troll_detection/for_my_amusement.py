@@ -1,7 +1,6 @@
 from tracker import Detector, Score
 
-msgs = ["Fuck you fag",
-        "I will kill you in your sleep"]
+msgs = ["Donde esta bibliotecha"]
 
 for msg in msgs:
     d = Detector()

@@ -34,7 +34,7 @@ class Listener(api_pb2_grpc.ProcessServicer):
 
         return api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score=score, rolling_score=rolling_score)
 
-    def Relevance(self, request_iterator, context):
+    def Relevance(self, request, context):
         raise Exception("Wrong server")
 
 

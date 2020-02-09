@@ -1,35 +1,25 @@
 package main
 
 import (
-	"net/http"
+	"math/rand"
 
 	"github.com/gorilla/websocket"
 )
 
-type wr struct {
-	w http.ResponseWriter
-	r *http.Request
-}
+func initTopicQueues() map[string](chan *websocket.Conn) {
+	topics := make(map[string](chan *websocket.Conn))
 
-func initTopicQueues() map[string](chan wr) {
-	topics := make(map[string](chan wr))
-
-	topics["Brexit"] = make(chan wr, 10)
-	topics["Abortion"] = make(chan wr, 10)
-	topics["Religion"] = make(chan wr, 10)
+	topics["Brexit"] = make(chan *websocket.Conn)
+	topics["Abortion"] = make(chan *websocket.Conn)
+	topics["Religion"] = make(chan *websocket.Conn)
 
 	return topics
 }
 
-func upgrade(obj wr) *websocket.Conn {
-	socket, err := upgrader.Upgrade(obj.w, obj.r, nil)
-	if err != nil {
-		panic(err)
-	}
-	return socket
-}
-
-//TODO
 func genID() string {
-	return "anvir"
+	id := make([]byte, 8)
+	for i := 0; i < 8; i++ {
+		id[i] = chars[rand.Intn(16)]
+	}
+	return string(id)
 }

@@ -11,21 +11,21 @@ import grpc
 import topicFinder
 
 chdir("../python_proto/")
-import api_pb2
-import api_pb2_grpc
+import python_proto.api_pb2 as api_pb2
+import python_proto.api_pb2_grpc as api_pb2_grpc
 
 
 class Listener(api_pb2_grpc.ProcessServicer):
 
     def __init__(self):
-        pass
+        self.topicFinderObj = topicFinder.TopicFinder()
 
     def Troll(self, request, context):
         raise Exception("Wrong server")
 
     def Relevance(self, request, context):
-        topicFinderObj = topicFinder.TopicFinder()
-        answer = topicFinderObj.checkRelvant(request.msg, request.conv_id)
+        print('Got me a tasty request')
+        answer = self.topicFinderObj.checkRelvant(request.msg, request.conv_id)
         return api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score=request.score, rolling_score=request.rolling_score, relevance=answer)
 
 

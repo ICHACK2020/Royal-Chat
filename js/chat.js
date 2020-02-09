@@ -12,9 +12,9 @@ var greenG = 230;
 var greenB = 64;
 
 function interpolate(troll) {
-    var red = redR * troll + greenR * (1 - troll);
-    var green = redG * troll + greenG * (1 - troll)
-    var blue = redB * troll + greenB * (1 - troll)
+    var red = troll * redR + (1.0 - troll) * greenR;
+    var green = troll * redG + (1.0 - troll) * greenG;
+    var blue = troll * redB + (1.0 - troll) * greenB;
     return "rgb(" + Math.floor(red) + ", " + Math.floor(green) + ", " + Math.floor(blue) + ")"
 }
 //var socket = new WebSocket("ws://146.169.207.172:8080/talk/");
@@ -77,7 +77,7 @@ function sendMessage() {
 function addMyMessage(message, troll) {
   let messageBox = document.getElementById("messageBox");
   messageBox.insertAdjacentHTML("beforeend", '<div class="panel message myMessage"><div class="panel-body"></div></div>');
-  messageBox.style.color = interpolate(troll);
+  messageBox.style.borderColor = interpolate(troll);
   printMessage(message);
 }
 

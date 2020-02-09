@@ -88,4 +88,6 @@
 footer {
   padding: 20px;
   text-align: center;
+  color: #999;
+  font-style: italic;
 }

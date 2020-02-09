@@ -77,8 +77,8 @@ function sendMessage() {
 function addMyMessage(message, troll) {
   let messageBox = document.getElementById("messageBox");
   messageBox.insertAdjacentHTML("beforeend", '<div class="panel message myMessage"><div class="panel-body"></div></div>');
-  messageBox.style.borderColor = interpolate(troll);
   printMessage(message);
+  document.getElementById("messageBox").lastChild.firstChild.style.borderColor = interpolate(troll);
 }
 
 function addOtherMessage(message) {

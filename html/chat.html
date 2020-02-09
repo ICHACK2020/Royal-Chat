@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <title>RoyalChat - IC Hack 20 Project</title>
-<script src="/static/js/chat.js" defer></script>
+<script src="./../js/chat.js" defer></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
-<link type="text/css" href="/static/css/style.css" rel="stylesheet" />
+<link type="text/css" href="./../css/style.css" rel="stylesheet" />
 <link rel="shortcut icon" type="image/png" href="/static/imgs/icon.png" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -32,6 +32,23 @@
     <textarea id="chatArea" rows="1" class="form-control" placeholder="Message" oninput="onMessageInput()"></textarea>
     <div class="input-group-btn">
       <input type="button" value="Send" id="sendButton" class="btn btn-success btn-lg" onclick="sendMessage()" />
+    </div>
+  </div>
+  <button type="button" id="modalBtn" class="hidden" data-toggle="modal" data-target="#disconnectModal">Open Modal</button>
+  <div id="disconnectModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" onclick="toHomePage()">&times;</button>
+          <h4 class="modal-title">Warning</h4>
+        </div>
+        <div class="modal-body">
+          <p>Your chat has been terminated.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="toHomePage()">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 </main>

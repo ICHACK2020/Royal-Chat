@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
+
+	api "ichack2020/proto"
 
 	"github.com/gorilla/websocket"
 )
@@ -48,7 +51,9 @@ func (c *conversation) read(conn *websocket.Conn) incomingMsg {
 	for {
 		err := conn.ReadJSON(&msg)
 		if err != nil {
-			panic(err)
+			c.user1.Close()
+			c.user2.Close()
+			return incomingMsg{}
 		}
 		c.incoming <- msg
 	}
@@ -75,14 +80,18 @@ func (c *conversation) receiver() {
 	for {
 		msg = <-c.incoming
 
-		//Python stuff
-		var troll float32 = 0.1
-		rollingTroll := 0.1
-		var relevance float32 = 0.6
-		//rollingRelevance := 0.2
-		if rollingTroll > 0.9 {
-
+		if len(msg.Msg) == 0 {
+			return
 		}
+		//Python stuff
+		response, err := client.Troll(context.Background(), &api.ApiCall{ConvId: msg.ConvID,
+			Uid: !(msg.UID == 0),
+			Msg: msg.Msg})
+		if err != nil {
+			panic(err)
+		}
+		var relevance float32 = 0.1
+		troll := response.GetScore()
 		//Non python stuff
 
 		outgoing := outgoingMsg{UID: msg.UID,

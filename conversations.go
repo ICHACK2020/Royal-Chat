@@ -86,7 +86,7 @@ func (c *conversation) receiver() {
 		}
 		var relevance float32 = 0.1
 		troll := response.GetScore()
-		rollingScore := response.GetRollingScore()
+		//rollingScore := response.GetRollingScore()
 		//Non python stuff
 
 		outgoing := outgoingMsg{UID: msg.UID,

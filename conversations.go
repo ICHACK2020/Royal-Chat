@@ -79,9 +79,10 @@ func (c *conversation) receiver() {
 			return
 		}
 		//Python stuff
-		response, err := client.Troll(context.Background(), &api.ApiCall{ConvId: msg.ConvID,
+		data := &api.ApiCall{ConvId: msg.ConvID,
 			Uid: !(msg.UID == 0),
-			Msg: msg.Msg})
+			Msg: msg.Msg}
+		response, err := trollClient.Troll(context.Background(), data)
 		var troll float32
 		if err != nil {
 			log.Fatal(err)
@@ -89,10 +90,19 @@ func (c *conversation) receiver() {
 		} else {
 			troll = response.GetScore()
 		}
-		var relevance float32 = 0.1
+
 		rollingScore := response.GetRollingScore()
 		if rollingScore > 0.8 || troll > 0.85 {
 			return
+		}
+
+		relevanceResponse, err := relevanceClient.Relevance(context.Background(), data)
+		var relevance float32
+		if err != nil {
+			log.Fatal(err)
+			relevance = 0
+		} else {
+			relevance = relevanceResponse.GetScore()
 		}
 		//Non python stuff
 

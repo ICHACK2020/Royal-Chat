@@ -22,8 +22,9 @@ var (
 			return true
 		},
 	}
-	topicQueues = initTopicQueues()
-	client      api.ProcessClient
+	topicQueues     = initTopicQueues()
+	trollClient     api.ProcessClient
+	relevanceClient api.ProcessClient
 )
 
 func main() {
@@ -36,7 +37,15 @@ func main() {
 	}
 	defer conn.Close()
 
-	client = api.NewProcessClient(conn)
+	trollClient = api.NewProcessClient(conn)
+
+	conn1, err := grpc.Dial("146.169.139.247:8080", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	relevanceClient = api.NewProcessClient(conn1)
 
 	http.Handle("/static/css/", http.StripPrefix("/static/css/", http.FileServer(http.Dir("css/"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("js/"))))

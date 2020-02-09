@@ -15,14 +15,16 @@ from nltk.corpus import stopwords
 from gensim.models import Word2Vec
 from nltk.tokenize import word_tokenize
 
+from os import listdir, getcwd
 
+print(listdir(getcwd()), getcwd())
 class TopicFinder:
     def __init__(self):
         self.dataText = ""
         self.convDict = {0 : "brexit.model",
                          1 : "uselection.model",
                          2 : "coronavirus.model"}
-        self.word2vec = Word2Vec.load("brexit.model")
+        # self.word2vec = Word2Vec.load("brexit.model")
         self.stopWords = stopwords.words('english')
 
     def loadArticle(self, url):

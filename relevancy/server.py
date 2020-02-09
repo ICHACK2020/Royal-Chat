@@ -18,16 +18,18 @@ import python_proto.api_pb2_grpc as api_pb2_grpc
 class Listener(api_pb2_grpc.ProcessServicer):
 
     def __init__(self):
-        self.topicFinderObj = topicFinder.TopicFinder()
+        #self.topicFinderObj = topicFinder.TopicFinder()
+        print("INIT")
 
     def Troll(self, request, context):
         raise Exception("Wrong server")
 
     def Relevance(self, request, context):
         print('Got me a tasty request')
-        answer = self.topicFinderObj.checkRelvant(request.msg, request.conv_id)
-        return api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score=request.score, rolling_score=request.rolling_score, relevance=answer)
-
+        #answer = self.topicFinderObj.checkRelvant(request.msg, request.conv_id)
+        #return api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score=request.score, rolling_score=request.rolling_score, relevance=answer)
+        return api_pb2.apiResponse(uid=request.uid, conv_id=request.conv_id, score= 0 ,
+                                   rolling_score=5.3)
 
 def run():
     server = grpc.server(futures.ThreadPoolExecutor(4))

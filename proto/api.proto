@@ -8,12 +8,12 @@ message apiCall {
 
 message apiResponse {
     string conv_id      = 1;
-    bool uid          = 2;
+    bool uid            = 2;
     float score         = 3;
     float rolling_score = 4;
 }
 
 service Process {
-    rpc Relevance (stream apiCall) returns (stream apiResponse) {}
-    rpc Troll (stream apiCall) returns (stream apiResponse) {}
+    rpc Relevance (apiCall) returns (apiResponse) {}
+    rpc Troll (apiCall) returns (apiResponse) {}
 }

@@ -148,7 +148,7 @@ func init() {
 func init() { proto.RegisterFile("api.proto", fileDescriptor_00212fb1f9d3bf1c) }
 
 var fileDescriptor_00212fb1f9d3bf1c = []byte{
-	// 204 bytes of a gzipped FileDescriptorProto
+	// 200 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4c, 0x2c, 0xc8, 0xd4,
 	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x57, 0x72, 0xe3, 0x62, 0x4f, 0x2c, 0xc8, 0x74, 0x4e, 0xcc, 0xc9,
 	0x11, 0x12, 0xe7, 0x62, 0x4f, 0xce, 0xcf, 0x2b, 0x8b, 0xcf, 0x4c, 0x91, 0x60, 0x54, 0x60, 0xd4,
@@ -157,11 +157,11 @@ var fileDescriptor_00212fb1f9d3bf1c = []byte{
 	0x88, 0xa9, 0x54, 0xcc, 0xc5, 0x9d, 0x58, 0x90, 0x19, 0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c,
 	0x4a, 0x8a, 0x59, 0x22, 0x5c, 0xac, 0xc5, 0xc9, 0xf9, 0x45, 0xa9, 0x60, 0xd3, 0x98, 0x82, 0x20,
 	0x1c, 0x21, 0x65, 0x2e, 0xde, 0xa2, 0xfc, 0x9c, 0x9c, 0xcc, 0xbc, 0xf4, 0x78, 0x88, 0x2c, 0x0b,
-	0x58, 0x96, 0x07, 0x2a, 0x18, 0x0c, 0x12, 0x33, 0x8a, 0xe6, 0x62, 0x0f, 0x28, 0xca, 0x4f, 0x4e,
-	0x2d, 0x2e, 0x16, 0xd2, 0xe4, 0xe2, 0x0c, 0x4a, 0xcd, 0x49, 0x2d, 0x4b, 0xcc, 0x4b, 0x4e, 0x15,
-	0xe2, 0xd0, 0x83, 0xfa, 0x49, 0x8a, 0x47, 0x0f, 0xc9, 0x55, 0x4a, 0x0c, 0x1a, 0x8c, 0x06, 0x8c,
-	0x42, 0xaa, 0x5c, 0xac, 0x21, 0x20, 0x63, 0xf0, 0x2b, 0x4b, 0x62, 0x03, 0x07, 0x90, 0x31, 0x20,
-	0x00, 0x00, 0xff, 0xff, 0xed, 0x96, 0xec, 0x31, 0x2d, 0x01, 0x00, 0x00,
+	0x58, 0x96, 0x07, 0x2a, 0x18, 0x0c, 0x12, 0x33, 0x0a, 0xe6, 0x62, 0x0f, 0x28, 0xca, 0x4f, 0x4e,
+	0x2d, 0x2e, 0x16, 0x52, 0xe5, 0xe2, 0x0c, 0x4a, 0xcd, 0x49, 0x2d, 0x4b, 0xcc, 0x4b, 0x4e, 0x15,
+	0xe2, 0xd0, 0x83, 0xfa, 0x49, 0x8a, 0x47, 0x0f, 0xc9, 0x55, 0x4a, 0x0c, 0x42, 0x8a, 0x5c, 0xac,
+	0x21, 0x20, 0x23, 0x70, 0x2b, 0x49, 0x62, 0x03, 0x07, 0x8c, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff,
+	0x3b, 0xa8, 0xd0, 0xb5, 0x25, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -176,8 +176,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ProcessClient interface {
-	Relevance(ctx context.Context, opts ...grpc.CallOption) (Process_RelevanceClient, error)
-	Troll(ctx context.Context, opts ...grpc.CallOption) (Process_TrollClient, error)
+	Relevance(ctx context.Context, in *ApiCall, opts ...grpc.CallOption) (*ApiResponse, error)
+	Troll(ctx context.Context, in *ApiCall, opts ...grpc.CallOption) (*ApiResponse, error)
 }
 
 type processClient struct {
@@ -188,147 +188,83 @@ func NewProcessClient(cc *grpc.ClientConn) ProcessClient {
 	return &processClient{cc}
 }
 
-func (c *processClient) Relevance(ctx context.Context, opts ...grpc.CallOption) (Process_RelevanceClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Process_serviceDesc.Streams[0], "/Process/Relevance", opts...)
+func (c *processClient) Relevance(ctx context.Context, in *ApiCall, opts ...grpc.CallOption) (*ApiResponse, error) {
+	out := new(ApiResponse)
+	err := c.cc.Invoke(ctx, "/Process/Relevance", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &processRelevanceClient{stream}
-	return x, nil
+	return out, nil
 }
 
-type Process_RelevanceClient interface {
-	Send(*ApiCall) error
-	Recv() (*ApiResponse, error)
-	grpc.ClientStream
-}
-
-type processRelevanceClient struct {
-	grpc.ClientStream
-}
-
-func (x *processRelevanceClient) Send(m *ApiCall) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *processRelevanceClient) Recv() (*ApiResponse, error) {
-	m := new(ApiResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *processClient) Troll(ctx context.Context, opts ...grpc.CallOption) (Process_TrollClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Process_serviceDesc.Streams[1], "/Process/Troll", opts...)
+func (c *processClient) Troll(ctx context.Context, in *ApiCall, opts ...grpc.CallOption) (*ApiResponse, error) {
+	out := new(ApiResponse)
+	err := c.cc.Invoke(ctx, "/Process/Troll", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &processTrollClient{stream}
-	return x, nil
-}
-
-type Process_TrollClient interface {
-	Send(*ApiCall) error
-	Recv() (*ApiResponse, error)
-	grpc.ClientStream
-}
-
-type processTrollClient struct {
-	grpc.ClientStream
-}
-
-func (x *processTrollClient) Send(m *ApiCall) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *processTrollClient) Recv() (*ApiResponse, error) {
-	m := new(ApiResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // ProcessServer is the server API for Process service.
 type ProcessServer interface {
-	Relevance(Process_RelevanceServer) error
-	Troll(Process_TrollServer) error
+	Relevance(context.Context, *ApiCall) (*ApiResponse, error)
+	Troll(context.Context, *ApiCall) (*ApiResponse, error)
 }
 
 func RegisterProcessServer(s *grpc.Server, srv ProcessServer) {
 	s.RegisterService(&_Process_serviceDesc, srv)
 }
 
-func _Process_Relevance_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProcessServer).Relevance(&processRelevanceServer{stream})
-}
-
-type Process_RelevanceServer interface {
-	Send(*ApiResponse) error
-	Recv() (*ApiCall, error)
-	grpc.ServerStream
-}
-
-type processRelevanceServer struct {
-	grpc.ServerStream
-}
-
-func (x *processRelevanceServer) Send(m *ApiResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *processRelevanceServer) Recv() (*ApiCall, error) {
-	m := new(ApiCall)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _Process_Relevance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiCall)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(ProcessServer).Relevance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Process/Relevance",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProcessServer).Relevance(ctx, req.(*ApiCall))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _Process_Troll_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ProcessServer).Troll(&processTrollServer{stream})
-}
-
-type Process_TrollServer interface {
-	Send(*ApiResponse) error
-	Recv() (*ApiCall, error)
-	grpc.ServerStream
-}
-
-type processTrollServer struct {
-	grpc.ServerStream
-}
-
-func (x *processTrollServer) Send(m *ApiResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *processTrollServer) Recv() (*ApiCall, error) {
-	m := new(ApiCall)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _Process_Troll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApiCall)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(ProcessServer).Troll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Process/Troll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProcessServer).Troll(ctx, req.(*ApiCall))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Process_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "Process",
 	HandlerType: (*ProcessServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "Relevance",
-			Handler:       _Process_Relevance_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "Relevance",
+			Handler:    _Process_Relevance_Handler,
 		},
 		{
-			StreamName:    "Troll",
-			Handler:       _Process_Troll_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
+			MethodName: "Troll",
+			Handler:    _Process_Troll_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "api.proto",
 }

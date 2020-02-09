@@ -30,7 +30,8 @@ socket.onmessage = function(e) {
   }
 }
 socket.onclose = function(e) {
-  console.log("closing")
+  console.log("closing");
+  window.location.replace("http://146.169.207.172:8080");
 }
 socket.onerror = function(e) {
   console.log(e);
@@ -46,6 +47,10 @@ class incomingMsg {
 
 function sendMessage() {
   let chatArea = document.getElementById("chatArea");
+  if (chatArea.value == "") {
+      alert("Enter a message");
+      return;
+  }
   socket.send(JSON.stringify(new incomingMsg(chatArea.value)));
   chatArea.value = "";
 }

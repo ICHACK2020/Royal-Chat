@@ -30,13 +30,8 @@ socket.onmessage = function(e) {
   }
 }
 socket.onclose = function(e) {
-<<<<<<< HEAD
   console.log("closing");
   window.location.replace("http://146.169.207.172:8080");
-=======
-    console.log("closing")
-    window.location.replace("http://146.169.207.172:8080")
->>>>>>> branch 'master' of https://github.com/ICHACK2020/ichack2020.git
 }
 socket.onerror = function(e) {
   console.log(e);

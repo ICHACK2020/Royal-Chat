@@ -41,6 +41,14 @@
   width: 300px;
 }
 
+#container-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -200px;
+  margin-left: -120px;
+}
+
 #loadingBox {
   text-align: center;
   color: #999;

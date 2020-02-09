@@ -79,6 +79,9 @@ class Detector:
 
         return {k: feature_dict['summaryScore']['value'] for k, feature_dict in response['attributeScores'].items()}
 
+    def get_rolling_score_as_score(self, id):
+        return self._db[id].rolling_scores
+
     def get_recent_score(self, id):
         return Score.get_single_score_metric(self._db[id].recent_score)
 

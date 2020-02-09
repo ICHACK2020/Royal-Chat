@@ -8,7 +8,8 @@ class Score:
     _scoring_features = ['THREAT',
                          'INSULT',
                          'IDENTITY_ATTACK',
-                         'PROFANITY']
+                         'PROFANITY',
+                         'SEXUALLY_EXPLICIT']
 
     def __init__(self):
         self._recent_score = {}
@@ -64,14 +65,15 @@ class Detector:
             'requestedAttributes': {'INSULT': {},
                                     'THREAT': {},
                                     'PROFANITY': {},
-                                    'IDENTITY_ATTACK': {}}
+                                    'IDENTITY_ATTACK': {},
+                                    'SEXUALLY_EXPLICIT': {}}
         }
 
         try:
             response = service.comments().analyze(body=analyze_request).execute()
         except HttpError:
             # If there is an error, for now we just return 0.5. This is because the API only supports english
-            return {k: 0.5 for k in ['INSULT', 'THREAT', 'PROFANITY', 'IDENTITY_ATTACK']}
+            return {k: 0.5 for k in ['INSULT', 'THREAT', 'PROFANITY', 'IDENTITY_ATTACK', 'SEXUALLY_EXPLICIT']}
 
         return {k: feature_dict['summaryScore']['value'] for k, feature_dict in response['attributeScores'].items()}
 

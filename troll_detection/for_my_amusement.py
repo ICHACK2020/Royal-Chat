@@ -1,6 +1,11 @@
 from tracker import Detector, Score
 
-msgs = ["Donde esta bibliotecha"]
+msgs = ["Donde esta bibliotecha",
+        "I wanna fuck you in the ass",
+        "nice tits",
+        "You stupid poo",
+        "I'm gonna give your wife cancer",
+        "you dirty curry man"]
 
 for msg in msgs:
     d = Detector()

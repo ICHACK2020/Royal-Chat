@@ -40,3 +40,12 @@
   border-color: #ddd;
   width: 300px;
 }
+
+#container-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -200px;
+  margin-left: -170px;
+
+}

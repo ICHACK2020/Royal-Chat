@@ -6,42 +6,45 @@
 <title>ICHACK 2020 Project</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
 <link type="text/css" href="/static/css/style.css" rel="stylesheet" />
+<link type="text/css" href="../css/style.css" rel="stylesheet" />
 <link rel="shortcut icon" type="image/png" href="/static/imgs/icon.png" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <main>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-xs-12">
-        <h1>Welcome to (name)!</h1>
-        <a href="#rules" data-toggle="collapse">Chat now!</a>
-        <div id="rules" class="collapse">
-        <h2>RULES</h2>
-          <ul>
-            <li>No Swearing</li>
-            <li>No Harrassment</li>
-            <li>Do not reveal personal information</li>
-            <li>Stick to the topic</li>
-          </ul>
-          <p><a href="chat.html">Yes, I understand</a></p>
-          <p><a href="#">No, I don't understand</a></p>
-        </div>
-        <form action="#" method="get">
-          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-primary">
-              <input type="radio" name="topic" value="politics" autocomplete="off" checked>Politics
-            </label>
-            <label class="btn btn-primary">
-              <input type="radio" name="topic" value="society" autocomplete="off">Society
-            </label>
-            <label class="btn btn-primary">
-              <input type="radio" name="topic" value="culture" autocomplete="off">Culture
-            </label>
+  <div id="container-box">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <h1>Welcome to (name)!</h1>
+          <a href="#rules" data-toggle="collapse">Chat now!</a>
+          <div id="rules" class="collapse">
+          <h2>RULES</h2>
+            <ul>
+              <li>No Swearing</li>
+              <li>No Harrassment</li>
+              <li>Do not reveal personal information</li>
+              <li>Stick to the topic</li>
+            </ul>
+            <p><a href="chat.html">Yes, I understand</a></p>
+            <p><a href="#">No, I don't understand</a></p>
           </div>
-          <input class="btn" type="submit" value="Submit" name="topic"/>
-        </form>
+          <form action="#" method="get">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <label class="btn btn-primary">
+                <input type="radio" name="topic" value="politics" autocomplete="off" checked>Politics
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="topic" value="society" autocomplete="off">Society
+              </label>
+              <label class="btn btn-primary">
+                <input type="radio" name="topic" value="culture" autocomplete="off">Culture
+              </label>
+            </div>
+            <input class="btn" type="submit" value="Submit" name="topic"/>
+          </form>
+        </div>
       </div>
     </div>
   </div>

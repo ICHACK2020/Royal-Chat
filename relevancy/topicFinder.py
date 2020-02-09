@@ -1,136 +1,94 @@
 # -*- coding: utf-8 -*-
-import spacy
-import nltk
-import gensim
-import pickle
-import csv
+"""
+Created on Sat Feb  8 14:07:36 2020
 
-from nltk.corpus import wordnet as wn
-from nltk.stem.wordnet import WordNetLemmatizer
-from spacy.lang.en import English
-from gensim import corpora
+@authors: Akshat, Krishan
+"""
+
+import bs4 as bs
+import urllib.request
+import re
+import nltk
+import math
+
+from nltk.corpus import stopwords
+from gensim.models import Word2Vec
+from nltk.tokenize import word_tokenize
 
 
 class TopicFinder:
-
     def __init__(self):
-        spacy.load('en')
-        self.parser = English()
-        self.en_stop = set(nltk.corpus.stopwords.words('english'))
+        self.dataText = ""
+        self.convDict = {0 : "brexit.model",
+                         1 : "uselection.model",
+                         2 : "coronavirus.model"}
+        self.word2vec = Word2Vec.load("brexit.model")
+        self.stopWords = stopwords.words('english')
 
-        nltk.download('wordnet')
-        nltk.download('stopwords')
+    def loadArticle(self, url):
+        scrapped_data = urllib.request.urlopen(url)
+        article = scrapped_data.read()
+        parsed_article = bs.BeautifulSoup(article, 'lxml')
+        paragraphs = parsed_article.find_all('p')
+        article_text = ""
 
-        self.ldamodel = gensim.models.ldamodel.LdaModel.load('ldaModel.gensim')
+        for p in paragraphs:
+            article_text += p.text
 
-        self.dictionary = gensim.models.ldamodel.LdaModel.load('dictionary.gensim')
+        # Cleaning the text
+        processed_article = article_text.lower()
+        # processed_article = re.sub('[^a-zA-Z]', ' ', processed_article)
+        # processed_article = re.sub(r'\s+', ' ', processed_article)
 
-    # This tokenizes the input into a list of words
-    def tokenize(self, text):
-        lda_tokens = []
-        tokens = self.parser(text)
-        for token in tokens:
-            if token.orth_.isspace():
-                continue
-            elif token.like_url:
-                lda_tokens.append('URL')
-            elif token.orth_.startswith('@'):
-                lda_tokens.append('SCREEN_NAME')
-            else:
-                lda_tokens.append(token.lower_)
-        return lda_tokens
+        self.dataText = processed_article
 
-    def get_lemma(self, word):
-        lemma = wn.morphy(word)
-        if lemma is None:
-            return word
-        else:
-            return lemma
+    def train(self, convID):
+        # Preparing the dataset
+        all_sentences = nltk.sent_tokenize(self.dataText)
 
-    def get_lemma2(self, word):
-        return WordNetLemmatizer().lemmatize(word)
+        all_words = [nltk.word_tokenize(sent) for sent in all_sentences]
 
-    def prepare_text_for_lda(self, text):
-        tokens = self.tokenize(text)
-        tokens = [token for token in tokens if len(token) > 4]
-        tokens = [token for token in tokens if token not in self.en_stop]
-        tokens = [self.get_lemma(token) for token in tokens]
-        return tokens
+        # Removing Stop Words
+        for i in range(len(all_words)):
+            all_words[i] = [w for w in all_words[i] if w not in self.stopWords]
 
-    def toCSV(filename, csvFilename):
-        with open(filename, 'r') as file:
-            data = file.read().replace('\n', '')
-            data = data.split()
-            print(data)
-            with open(csvFilename, 'w') as csvFile:
-                writer = csv.writer(csvFile, delimiter=',')
-                writer.writerow(data)
-            csvFile.close()
-        file.close()
+        self.word2vec = Word2Vec(all_words, min_count=1)
+        self.word2vec.save(self.convDict.get(convID))
 
-    def train(self, filename, updateCurrentData=True):
-        originalDictionaryData = []
-        if updateCurrentData:
-            originalDictionaryData = self.dictionary
+    def checkInData(self, word):
+        try:
+            self.word2vec.wv.similar_by_word(word)
+            return True
+        except KeyError:
+            return False
 
-        text_data = []
-        with open(filename) as f:
-            for line in f:
-                tokens = self.prepare_text_for_lda(line)
-                print(tokens)
-                text_data.append(tokens)
+    def checkRelevant(self, string, convID):
+        self.word2vec = Word2Vec.load(self.convDict.get(convID))
+        words = self.removeStopWords(string.lower())
+        print("These are the words", words)
+        total = 0
+        for word in words:
+            # print(self.word2vec.wv.most_similar(word)[0][1])
+            if self.checkInData(word):
+                print(word)
+                print(self.word2vec.wv.most_similar(word))
+                total += self.word2vec.wv.most_similar(word)[0][1]
+        if total > 0.1:
+            return 1
+        return 0
 
-        self.dictionary = corpora.Dictionary(text_data)
-        self.dictionary.merge_with(originalDictionaryData)
-        corpus = [self.dictionary.doc2bow(text) for text in text_data]
-        print("\n this is the dictionary")
-        print([self.dictionary.doc2bow(text) for text in text_data])
-        print()
-        pickle.dump(corpus, open('corpus.pkl', 'wb'))
-        self.dictionary.save('dictionary.gensim')
+    def removeStopWords(self, string):
+        word_tokens = word_tokenize(string)
+        filtered_sentence = [w for w in word_tokens if not w in self.stopWords]
+        return filtered_sentence
 
-        print()
-        print("this is the gensim dictionary")
-        print(self.dictionary)
-        print()
+if __name__ == "__main__":
+    topicFinder = TopicFinder()
 
-        NUM_TOPICS = 1
-        self.ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=NUM_TOPICS, id2word=self.dictionary,
-                                                        passes=15)
-        self.ldamodel.save('ldaModel.gensim')
-        topics = self.ldamodel.print_topics(num_words=4)
-        for topic in topics:
-            print(topic)
-
-    def getRelevancy(self, string, convID):
-        string = self.prepare_text_for_lda(string)
-        string_bow = self.dictionary.doc2bow(string)
-        weightings = self.ldamodel.get_document_topics(string_bow)
-        maxWeightAndID = weightings[0]
-        for (converID, weight) in weightings:
-            if weight > maxWeightAndID[1]:
-                maxWeightAndID = (converID, weight)
-
-        print("FIRST ONE: ", converID)
-        print("CONVID: ", convID)
-        return converID == convID
-
-    def readPickle(self):
-        pickleFile = open('corpus.pkl', "rb")  # statistics file is loaded
-        self.statsData = pickle.load(pickleFile)
-        print("hi")
-        print(self.statsData)
-
-
-topicFinder = TopicFinder()
-
-# topicFinder.train('dataBrexitBBCData.csv')
-
-new_doc = 'What advantages are there for the United Kingdom staying in the European Union'
-print("FINAL ANSWER")
-print(topicFinder.getRelevancy(new_doc, 0))
-# topicFinder.readPickle()
-
-
-
-
+    topicFinder.loadArticle('https://en.wikipedia.org/wiki/Brexit')
+    topicFinder.loadArticle("https://www.bbc.co.uk/news/world-us-canada-51070020")
+    topicFinder.loadArticle("https://www.dailymail.co.uk/news/article-7980883/Video-shows-officials-protective-suits-dragging-suspected-coronavirus-carriers-homes.html")
+    topicFinder.train(2)
+    print(topicFinder.checkRelevant("What did voters in England and Wales do", 0))
+    print(topicFinder.checkRelevant("What is different about next years election", 1))
+    print(topicFinder.checkRelevant("There are circuit boards sold in Wuhan China", 2))

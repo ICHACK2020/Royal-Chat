@@ -10,7 +10,8 @@ msgs = ["I have never seen anything so despicable before",
         "If you don't believe in God, he will punish you in hell forever",
         "We need to take the country forward. make britain great again. We don't need the EU.",
         "That's so gay",
-        "Well no obviously not, I think it's a little more subtle than that"]
+        "Well no obviously not, I think it's a little more subtle than that",
+        "fuck you"]
 
 for msg in msgs:
     d = Detector()

@@ -24,21 +24,11 @@ class Score:
 
     @classmethod
     def get_single_score_metric(cls, scores):
-        weightings = {
-            'THREAT': 48,
-            'INSULT': 10,
-            'IDENTITY_ATTACK': 38,
-            'PROFANITY': 4
-        }
+        for key, value in scores.items():
+            if value > 0.8 and key != 'PROFANITY':
+                return value
 
-        # Very simplistic algorithm, could use some refinement
-        score = 0
-        for key, weight in weightings.items():
-            score += weight * scores[key]
-
-        score /= 100
-
-        return score
+        return sum(scores.values()) / len(scores)
 
     @property
     def recent_score(self):

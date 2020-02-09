@@ -26,6 +26,7 @@ socket.onmessage = function(e) {
     } else {
       addOtherMessage(obj.Msg);
     }
+    handleResize();
     console.log(JSON.parse(e.data));
   }
 }

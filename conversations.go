@@ -17,15 +17,9 @@ type conversation struct {
 
 //Constantly connects users
 func newConversation() {
-	for k, channel := range topicQueues {
-		fmt.Println(k)
+	for _, channel := range topicQueues {
 		go func(channel chan *websocket.Conn) {
 			for {
-				if len(channel) > 0 {
-					fmt.Println("hi")
-				} else {
-					fmt.Println(len(channel), k)
-				}
 				u1 := <-channel
 				u2 := <-channel
 				conv := &conversation{
@@ -92,6 +86,7 @@ func (c *conversation) receiver() {
 		}
 		var relevance float32 = 0.1
 		troll := response.GetScore()
+		rollingScore := response.GetRollingScore()
 		//Non python stuff
 
 		outgoing := outgoingMsg{UID: msg.UID,

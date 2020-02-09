@@ -38,10 +38,6 @@ func main() {
 
 	client = api.NewProcessClient(conn)
 
-	if err != nil {
-		panic(err)
-	}
-
 	http.Handle("/static/css/", http.StripPrefix("/static/css/", http.FileServer(http.Dir("css/"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("js/"))))
 	http.Handle("/static/imgs/", http.StripPrefix("/static/imgs/", http.FileServer(http.Dir("html/images"))))

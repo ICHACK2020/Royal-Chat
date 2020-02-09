@@ -72,6 +72,7 @@ function addOtherMessage(message) {
 function printMessage(message) {
   var node = document.createTextNode(message);
   document.getElementById("messageBox").lastChild.firstChild.appendChild(node);
+  handleResize();
   window.scrollTo(0, document.body.scrollHeight);
 }
 
